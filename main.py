@@ -45,12 +45,18 @@ class LiteralNode(BaseNodeType):
     value: str
 
 
-# Base Class for TypeName data type
+# Class definition for ElementaryTypeName node
 @dataclass
-class TypeName(BaseNodeType):
+class ElementaryTypeNameNode(BaseNodeType):
     name: str
     state_mutability: Optional[str] = None
     type_descriptions: TypeDescriptions
+
+
+# Base Class for TypeName data type
+@dataclass
+class TypeName(ElementaryTypeNameNode):
+    pass
 
 
 # Every ast starts with a source unit. Class defintion for all source unit node types
@@ -95,7 +101,7 @@ class ContractDefinitionNode(BaseNodeName):
 @dataclass
 class EventDefinitionNode(BaseNodeName):
     anonymous: bool
-    event_selector: str
+    event_selector: Optional[str] = None
     parameters: ParameterListNode
 
 
