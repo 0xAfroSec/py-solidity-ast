@@ -32,6 +32,23 @@ ast = {
 }
 
 
+def create_nodes(node_list):
+    # nodes = []
+    # for i in node_list:
+    key_data = []
+    for key, value in node_list.items():
+        # get data type for each value
+        key_data.append((key, type(value)))
+
+    # Create class_name from Node Type
+    node_name = f'{node_list.get("nodeType", "no_node_type")}Node'
+    # create a dataclass with each key and the value as the data type
+    new_node = make_dataclass(node_name, key_data)
+
+    # nodes.append(new_node)
+    return new_node
+
+
 '''
 Given a dictionary as input, Dynamically creates a data class object with the keys as attributes and the values as data type for the attributes. Returns a data class object.
 and
@@ -50,25 +67,35 @@ def create_class(ast_dict):
     # create a dataclass with each key and the value as the data type
     new_class = make_dataclass(class_name, key_data)
 
+    # if new_class.nodes != []:
+    #     nodes = create_nodes(new_class.nodes)
+
     # Method to return node type
     def node_type(self):
-        return f"The Node Type is: {self.nodeType}"
+        print(f"The Node Type is: {self.nodeType}")
+        return self.nodeType
 
     # add node_type method to new class instance
     new_class.node_type = node_type
 
-    return new_class
+    return new_class  # nodes
 
 
-@dataclass
-class AstClass():
-    SourceUnit: create_class(ast)
+# @dataclass
+# class AstClass:
+#     SourceUnit: create_class(ast)
+
+# unit2 = AstClass(ast)
+# print(unit2)
 
 
 # create a new class object
 unit = create_class(ast)
 # create new class instance
 sourceunit = unit(**ast)
-
-
-print(sourceunit.node_type())
+if sourceunit.nodes:
+    for node in sourceunit.nodes:
+        nodes = create_nodes(node)
+        node_class = nodes(**node)
+        pprint(node_class)
+# print(sourceunit.node_type())
