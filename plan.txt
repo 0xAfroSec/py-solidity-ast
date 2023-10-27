@@ -1,5 +1,0 @@
-1. build schema
-2. build finder
-2. build the rest of the files
-3. parse asts
-4. search asts for particular patterns

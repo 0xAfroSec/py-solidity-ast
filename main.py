@@ -1,120 +1,60 @@
-from dataclasses import dataclass
-from typing import Dict, List, Optional
 
-# Create classes to handle the different types of nodes in the ast
+"""
+    This module provides functions for generating SourceUnit objects from Solidity source code.
 
+    Functions:
+        from_standard_output_json(path: str) -> set:
+            Generates SourceUnit objects from a standard output json file.
 
-# Base data type for all ast classes. These parameters are available for all node types
-@dataclass
-class BaseNodeType:
-    id_num: int
-    node_type: str
-    src: str
+        from_standard_output(output_json: dict) -> set:
+            Generates SourceUnit objects from a standard output json as a dict.
 
+        from_ast(ast: dict) -> SourceUnit:
+            Generates a SourceUnit object from the given AST. Dependencies are not set.
+"""
 
-# Base class definition for nodes that have name fields
-@dataclass
-class BaseNodeName(BaseNodeType):
-    name: str
-    name_location: Optional[str] = None
+import json
+from pathlib import Path
 
-
-# Base Class for TypeDescription data type
-@dataclass
-class TypeDescriptions:
-    type_identifier: str
-    type_string: str
+from dependencies import set_dependencies
+from nodes import node_class_factory
 
 
-# Base class definition for ParameterList node type
-@dataclass
-class ParameterListNode(BaseNodeType):
-    parameters: list
+def from_standard_output_json(path):
+    """
+    Generates SourceUnit objects from a standard output json file.
+
+    Arguments:
+        path: path to the json file
+    """
+
+    output_json = json.load(Path(path).open())
+    return from_standard_output(output_json)
 
 
-# Base class definition for Literal Node types
-@dataclass
-class LiteralNode(BaseNodeType):
-    hex_value: Optional[str] = None
-    is_constant: bool
-    is_lvalue: bool
-    is_pure: bool
-    kind: str
-    lvalue_requested: bool
-    type_descriptions: TypeDescriptions
-    value: str
+def from_standard_output(output_json):
+    """
+    Generates SourceUnit objects from a standard output json as a dict.
+
+    This function takes a dictionary of standard compiler output as input and generates SourceUnit objects from it.
+    The output is a set of SourceUnit objects that represent the Solidity source code.
+
+    Arguments:
+        output_json (dict): A dictionary of standard compiler output.
+
+    Returns:
+        set: A set of SourceUnit objects that represent the Solidity source code.
+    """
+
+    source_nodes = [node_class_factory(v["ast"], None)
+                    for v in output_json["sources"].values()]
+    source_nodes = set_dependencies(source_nodes)
+    return source_nodes
 
 
-# Class definition for ElementaryTypeName node
-@dataclass
-class ElementaryTypeNameNode(BaseNodeType):
-    name: str
-    state_mutability: Optional[str] = None
-    type_descriptions: TypeDescriptions
+def from_ast(ast):
+    """
+    Generates a SourceUnit object from the given AST. Dependencies are not set.
+    """
 
-
-# Base Class for TypeName data type
-@dataclass
-class TypeName(ElementaryTypeNameNode):
-    pass
-
-
-# Every ast starts with a source unit. Class defintion for all source unit node types
-@dataclass
-class SourceUnit(BaseNodeType):
-    absolute_path: str
-    exported_symbols: dict
-    license_type: str
-    nodes: list
-
-
-# Class definiton for PragmaDirective node type
-@dataclass
-class PragmaDirectiveNode(BaseNodeType):
-    literals: list
-
-
-# ErrorDefinition node type class
-@dataclass
-class ErrorDefinitionNode(BaseNodeName):
-    error_selector: str
-    parameters: ParameterListNode
-
-
-# Class properties for contract definition type nodes
-@dataclass
-class ContractDefinitionNode(BaseNodeName):
-    abstract: bool
-    base_contracts: list
-    canonical_name: str
-    contract_dependencies: list
-    contract_kind: str
-    fully_implemented: bool
-    linearized_base_contracts: list
-    nodes: list
-    scope: int
-    used_errors: list
-    used_events: list
-
-
-# class properties for Event type nodes
-@dataclass
-class EventDefinitionNode(BaseNodeName):
-    anonymous: bool
-    event_selector: Optional[str] = None
-    parameters: ParameterListNode
-
-
-# Class properties for Variable Declaration type nodes
-@dataclass
-class VariableDeclarationNode(BaseNodeName):
-    constant: bool
-    function_selector: Optional[str] = None
-    indexed: Optional[bool] = None
-    mutability: str
-    scope: int
-    state_variable: bool
-    storage_location: str
-    type_descriptions: TypeDescriptions
-    type_name: Optional[TypeName] = None
-    value: Optional[LiteralNode] = None
+    return node_class_factory(ast, None)
