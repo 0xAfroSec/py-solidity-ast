@@ -7,7 +7,7 @@ Additionally, it provides methods for extracting source code from the AST using 
 
 import functools
 from copy import deepcopy
-
+from typing import Union, Tuple
 from grammar import BASE_NODE_TYPES
 
 

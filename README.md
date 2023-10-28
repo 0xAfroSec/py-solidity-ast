@@ -1,6 +1,6 @@
 # Py-Solidity-AST
 
-A Python library for parsing and working with the AST output of the [Solc](https://github.com/ethereum/solidity) compiler.
+A Python library for parsing and working with the Abstract Syntax Tree (AST) output of the [Solc](https://github.com/ethereum/solidity) compiler or any compiled solidity files.
 
 ## Table of Contents
 
