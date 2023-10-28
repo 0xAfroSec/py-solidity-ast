@@ -527,6 +527,68 @@ class NodeBase:
 
         return extracted_code
 
+# find sibling node with the given filters
+
+    def find_sibling(self, parent_filters, sibling_filters, parent_depth=-1, sibling_depth=1):
+        """
+        Finds the sibling node of the current node that matches the given filters.
+
+        Args:
+            parent_filters (dict or list): a dictionary or list of dictionaries containing the attributes to check for.
+            sibling_filters (dict or list): a dictionary or list of dictionaries containing the attributes to check for.
+            parent_depth (int): the maximum depth to search for the parent node. Defaults to -1 (unlimited depth).
+            sibling_depth (int): the maximum depth to search for the sibling node. Defaults to 1.
+
+        Returns:
+            A tuple containing three values:
+            - A boolean indicating whether a sibling node was found.
+            - The sibling node (if found), or None.
+            - The parent node of the sibling node (if found), or None.
+        """
+        # get the parent node with the given filters
+        parent_sucess, parent = self.parent_has_attributes(
+            parent_filters, depth=parent_depth)
+        if parent_sucess:
+            # get the sibling node with the given filters
+            sibling_sucess, sibling = parent.child_has_attributes(
+                sibling_filters, depth=sibling_depth)
+            if sibling_sucess:
+                # return the sibling and parent node
+                return sibling_sucess, sibling, parent
+        # return None for both sibling and parent nodes if no match is found
+        return False, None, None
+
+    # find sibling nodes with the given filters
+    def find_siblings(self, sibling_filters, parent_filters, sibling_depth=1, parent_depth=-1):
+        """
+        Finds the sibling nodes of the current node that match the given filters.
+
+        Args:
+            sibling_filters (dict or list): a dictionary or list of dictionaries containing the attributes to check for.
+            parent_filters (dict or list): a dictionary or list of dictionaries containing the attributes to check for.
+            sibling_depth (int): the maximum depth to search for the sibling node. Defaults to 1.
+            parent_depth (int): the maximum depth to search for the parent node. Defaults to -1 (unlimited depth).
+
+        Returns:
+            A tuple containing three values:
+            - A boolean indicating whether a sibling node was found.
+            - The sibling nodes (if found), or None.
+            - The parent nodes of the sibling nodes (if found), or None.
+        """
+        # get the parent nodes with the given filters
+        parent_sucess, parent = self.parent_has_attributes(
+            parent_filters, depth=parent_depth)
+        if parent_sucess:
+            # get the sibling nodes with the given filters
+            sibling_sucess, siblings = parent.children_have_attributes(
+                sibling_filters, depth=sibling_depth)
+            if sibling_sucess:
+                # return the sibling and parent nodes
+                return sibling_sucess, siblings, parent
+
+        # return None for both sibling and parent nodes if no match is found
+        return False, None, None
+
 
 class IterableNodeBase(NodeBase):
     """
