@@ -35,11 +35,11 @@ First, use [py-solc-x](https://github.com/iamdefinitelyahuman/py-solc-x) to comp
 >>> output_json = solcx.compile_standard(input_json)
 ```
 
-Next, import `py-solcast` and initialize using `from_standard_output_json` or `from_standard_output`. This returns a list of `SourceUnit` objects, which each represent the base AST node in a Solidity source file.
+Next, import `py-solidity-ast` and initialize using `from_standard_output_json` or `from_standard_output`. This returns a list of `SourceUnit` objects, which each represent the base AST node in a Solidity source file.
 
 ```python
->>> import py-solcast
->>> nodes = py-solcast.from_standard_output(output_json)
+>>> import py-solidity-ast
+>>> nodes = py-solidity-ast.from_standard_output(output_json)
 >>> nodes
 [<SourceUnit iterable 'contracts/Token.sol'>, <SourceUnit iterable 'contracts/SafeMath.sol'>]
 ```
@@ -47,8 +47,8 @@ Next, import `py-solcast` and initialize using `from_standard_output_json` or `f
 You can also generate a single `SourceUnit` directly from that source's AST:
 
 ```python
->>> import py-solcast
->>> node = py-solcast.from_ast(output_json["sources"]["contracts/Token.sol"]["ast"])
+>>> import py-solidity-ast
+>>> node = py-solidity-ast.from_ast(output_json["sources"]["contracts/Token.sol"]["ast"])
 >>> node
 <SourceUnit iterable 'contracts/Token.sol'>
 ```
@@ -83,7 +83,7 @@ Fields mostly follow the expected [AST grammar](https://docs.soliditylang.org/en
 
 The following additional fields are also available:
 
-- Most nodes have a `baseNodeType` field as defined in [grammar.py](py-solcast/grammar.py)
+- Most nodes have a `baseNodeType` field as defined in [grammar.py](py-solidity-ast/grammar.py)
 - `ContractDefinition` nodes have `dependencies` and `libraries` fields that point to related `ContractDefition` nodes
 
 Some Examples:
