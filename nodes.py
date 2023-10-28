@@ -516,9 +516,9 @@ class NodeBase:
         start, end = self.get_line_numbers(source_code)
 
         # Get the start and length of the code block
-        start, length, _ = map(int, self.src.split(':'))
+        start_index, length, _ = map(int, self.src.split(':'))
         # Extract the code block
-        extracted_code = source_code[start:start + length]
+        extracted_code = source_code[start_index:start_index + length]
 
         # Add line numbers to the code block
         if loc:
