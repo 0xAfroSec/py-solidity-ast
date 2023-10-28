@@ -6,17 +6,26 @@ A Python library for parsing and working with the AST output of the [Solc](https
 
 - [Py-Solidity-AST](#py-solidity-ast)
   - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [Interacting with Nodes](#interacting-with-nodes)
+  - [Features 🧑‍💻](#features-)
+  - [Installation 🛠️](#installation-️)
+  - [Usage 💻](#usage-)
+    - [Interacting with Nodes 🌐](#interacting-with-nodes-)
       - [Code Selection Documentation](#code-selection-documentation)
-    - [Exploring the Tree](#exploring-the-tree)
-    - [Interacting with Nodes and Source Code](#interacting-with-nodes-and-source-code)
-  - [Contributing Guidelines](#contributing-guidelines)
+    - [Exploring the Tree 📊](#exploring-the-tree-)
+    - [Interacting with Nodes and Source Code 📝](#interacting-with-nodes-and-source-code-)
+  - [Contributing Guidelines 🤝](#contributing-guidelines-)
   - [Credits](#credits)
   - [License](#license)
 
-## Installation
+## Features 🧑‍💻
+
+- [x] Parse Solidity AST JSON output
+- [x] Filter and search through nodes
+- [x] Find parents, children and siblings of nodes
+- [x] Fetch line numbers of nodes from source code
+- [x] Generate code snippets from nodes
+
+## Installation 🛠️
 
 You can install the latest release via `pip`:
 
@@ -24,15 +33,15 @@ You can install the latest release via `pip`:
 $ pip install py-solidity-ast
 ```
 
-## Usage
+## Usage 💻
 
 First, use [py-solc-x](https://github.com/iamdefinitelyahuman/py-solc-x) to compile your contracts to the [standard JSON output format](https://solidity.readthedocs.io/en/latest/using-the-compiler.html#output-description).
 
 ```python
->>> import json
->>> import solcx
->>> input_json = json.load(open('input.json'))
->>> output_json = solcx.compile_standard(input_json)
+import json
+import solcx
+input_json = json.load(open('input.json'))
+output_json = solcx.compile_standard(input_json)
 ```
 
 Next, import `py-solidity-ast` and initialize using `from_standard_output_json` or `from_standard_output`. This returns a list of `SourceUnit` objects, which each represent the base AST node in a Solidity source file.
@@ -41,6 +50,7 @@ Next, import `py-solidity-ast` and initialize using `from_standard_output_json` 
 import py-solidity-ast
 
 nodes = py-solidity-ast.from_standard_output(output_json)
+
 nodes
 #output: [<SourceUnit iterable 'contracts/Token.sol'>, <SourceUnit iterable 'contracts/SafeMath.sol'>]
 ```
@@ -48,34 +58,36 @@ nodes
 You can also generate a single `SourceUnit` directly from that source's AST:
 
 ```python
->>> import py-solidity-ast
->>> node = py-solidity-ast.from_ast(output_json["sources"]["contracts/Token.sol"]["ast"])
->>> node
-<SourceUnit iterable 'contracts/Token.sol'>
+import py-solidity-ast
+
+node = py-solidity-ast.from_ast(output_json["sources"]["contracts/Token.sol"]["ast"])
+
+node
+# output: <SourceUnit iterable 'contracts/Token.sol'>
 ```
 
-### Interacting with Nodes
+### Interacting with Nodes 🌐
 
 Each node has the following attributes:
 
 ```python
->>> node
+node
 # the current node is a FunctinoDefinition node with the name 'mul'
-<FunctionDefinition iterable 'mul'>
+# output: <FunctionDefinition iterable 'mul'>
 
->>> node.name
-"mul"
+node.name
+# output: "mul"
 
->>> node.depth  # Number of nodes between this node and the SourceUnit
-2
+node.depth  # Number of nodes between this node and the SourceUnit
+# output: 2
 
->>> node.src  # The 'src' information of the node "start:length:1"
-"4948:1477:1"
+node.src  # The 'src' information of the node "start:length:1"
+# output: "4948:1477:1"
 
->>> node.contract_id  # Contract ID as given by the standard compiler JSON
-2
+node.contract_id  # Contract ID as given by the standard compiler JSON
+# output: 2
 
->>> node.fields  # List of fields for this node
+node.fields  # List of fields for this node
 ['baseNodeType', 'documentation', 'id', 'implemented', 'kind', 'modifiers', 'name', 'nodeType', 'nodes', 'parameters', 'returnParameters', 'scope', 'src', 'stateMutability', 'superFunction', 'visibility']
 
 ```
@@ -107,32 +119,32 @@ The `nodes` attribute of the `source_node['SafeMath']['mul']` variable contains 
 
 ```python
 
->>> source_node
-<SourceUnit iterable 'contracts/math/SafeMath.sol'>
+source_node
+# output: <SourceUnit iterable 'contracts/math/SafeMath.sol'>
 
->>> source_node.nodes
-[<PragmaDirective object>, <ContractDefinition iterable 'SafeMath'>]
+source_node.nodes
+# output: [<PragmaDirective object>, <ContractDefinition iterable 'SafeMath'>]
 
->>> source_node[1]
-<ContractDefinition iterable 'SafeMath'>
+source_node[1]
+# output: <ContractDefinition iterable 'SafeMath'>
 
->>> source_node['SafeMath']
-<ContractDefinition iterable 'SafeMath'>
+source_node['SafeMath']
+# output: <ContractDefinition iterable 'SafeMath'>
 
->>> source_node['SafeMath'].fields
+source_node['SafeMath'].fields
 ['baseContracts', 'children', 'contractDependencies', 'contractKind', 'contract_id', 'dependencies', 'depth', 'documentation', 'fullyImplemented', 'id', 'is_child_of', 'is_parent_of', 'keys', 'libraries', 'linearizedBaseContracts', 'name', 'nodeType', 'nodes', 'offset', 'parent', 'parents', 'scope', 'src']
 
->>> source_node['SafeMath'].nodes
-[<FunctionDefinition iterable 'add'>, <FunctionDefinition iterable 'sub'>, <FunctionDefinition iterable 'mul'>, <FunctionDefinition iterable 'div'>, <FunctionDefinition iterable 'mod'>]
+source_node['SafeMath'].nodes
+[<FunctionDefinition iterable 'add'>, <FunctionDefinition iterable 'sub'>, <FunctionDefinition iterable 'mul'>, # output: <FunctionDefinition iterable 'div'>, <FunctionDefinition iterable 'mod'>]
 
->>> source_node['SafeMath']['mul']
-<FunctionDefinition iterable 'mul'>
+source_node['SafeMath']['mul']
+# output: # output: <FunctionDefinition iterable 'mul'>
 
->>> source_node['SafeMath']['mul']
-[<IfStatement object>, <VariableDeclarationStatement object>, <FunctionCall object>, <Return object>]
+source_node['SafeMath']['mul']
+# output: [<IfStatement object>, <VariableDeclarationStatement object>, <FunctionCall object>, <Return object>]
 ```
 
-### Exploring the Tree
+### Exploring the Tree 📊
 
 The `Node.children()` method is used to search and filter through child nodes of a given node. It takes any of the following keyword arguments:
 
@@ -146,12 +158,12 @@ The `Node.children()` method is used to search and filter through child nodes of
 - `exclude_filter`: Dictionary of `{'attribute': "value"}` that children cannot match.
 
 ```python
->>> node = s['Token']['transfer']
->>> node.children(
+node = s['Token']['transfer']
+node.children(
     include_children=False,
     filters={'nodeType': "FunctionCall", "expression.name": "require"}
 )
-[<FunctionCall>]
+# output: [<FunctionCall>]
 ```
 
 `Node.parent()` and `Node.parents()` are used to travel back up the tree. They take the following arguments:
@@ -162,8 +174,8 @@ The `Node.children()` method is used to search and filter through child nodes of
 `Node.parent()` returns one result, `Node.parents()` returns a list of matches.
 
 ```python
->>> node.parents()
-[<ContractDefinition iterable 'Token'>, <SourceUnit iterable object 'contracts/Token.sol'>]
+node.parents()
+# output: [<ContractDefinition iterable 'Token'>, <SourceUnit iterable object 'contracts/Token.sol'>]
 ```
 
 The `Node.find_node()` and `Node.find_nodes()` methods are used to search the tree for a node with desired attributes that has parent and children nodes that match the given filters. They take the following arguments:
@@ -178,7 +190,7 @@ The `Node.find_node()` and `Node.find_nodes()` methods are used to search the tr
 `find_node()` returns a `True` and a tuple of the node, its parent and its child; returns `False` and None if no match. `find_nodes()` returns the same as `find_node()`, but returns a list of all matches.
 
 ```python
->>> node.find_node(
+node.find_node(
     node_filters={'nodeType': "Identifier","name": "require"},
     parent_filters={'kind': "FunctionCall"},
     child_filters={'typeString': "BinaryOperation", "operator": "!="},
@@ -192,14 +204,14 @@ The `Node.find_node()` and `Node.find_nodes()` methods are used to search the tr
 The `child_has_attributes()` and `children_have_attributes` methods are used to check if a node has a child or children with the given attributes.
 
 ```python
->>> node.child_has_attributes({'nodeType': "Identifier", "expression.name": "require"})
+node.child_has_attributes({'nodeType': "Identifier", "expression.name": "require"})
 
 # output: True, <Identifier object 'require'>
 ```
 
 `parent_has_attributes()` and `parents_have_attributes()` function the same way as `child_has_attributes()`and`children_have_attributes()`, but search up the tree instead of down.
 
-### Interacting with Nodes and Source Code
+### Interacting with Nodes and Source Code 📝
 
 The AST parser can also generate code snippets from the AST using the source code of the contract.
 `Node.extract_code()` returns a string of the code at the node's src location. It takes the following arguments:
@@ -209,21 +221,21 @@ The AST parser can also generate code snippets from the AST using the source cod
 - `tags`: If True, the code will be returned with tags like '//@audit' and '//@info' that can be used to annotate the code. If False, the code will be returned without tags. Defaults to True.
 
 ```python
->>> contract_node = from_ast(file['ast'])
+contract_node = from_ast(file['ast'])
 
->>> contract_node
+contract_node
 # output: <SourceUnit iterable 'contracts/Token.sol'>
 
->>> success, child = contract_node.child_has_attributes({'nodeType': "Identifier", "expression.name": "require"})
+success, child = contract_node.child_has_attributes({'nodeType': "Identifier", "expression.name": "require"})
 # output: success = True, child = <Identifier object 'require'>
 
->>> child.extract_code(source_code, loc=True)
+child.extract_code(source_code, loc=True)
 # output: 99: require(success, "RdpxReserve: transfer failed");
 ```
 
 Lastly, you can fetch the line numbers of a node using the `Node.get_line_numbers()` . It returns the start and end lines of the node as a tuple.
 
-## Contributing Guidelines
+## Contributing Guidelines 🤝
 
 We welcome contributions to this project! To contribute, please follow these guidelines:
 

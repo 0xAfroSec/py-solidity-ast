@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "py-solidity-ast"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
-  { name="0xAfroSec", email="afrosecaudits@gmail.com" }, { name="dev0cloo", email="etor.ocloo@gmail.com" }
+  { name="dev0cloo", email="etor.ocloo@gmail.com" }, { name="0xAfroSec", email="afrosecaudits@gmail.com" } 
 ]
-maintainers = [{ name="0xAfroSec", email="afrosecaudits@gmail.com" },
-  { name="dev0cloo", email="etor.ocloo@gmail.com" }]
+maintainers = [{ name="dev0cloo", email="etor.ocloo@gmail.com" }, { name="0xAfroSec", email="afrosecaudits@gmail.com" }
+  ]
 license = { file = "LICENSE" }
 description = "A Python library for parsing and working with the AST output of the Solc compiler"
 readme = "README.md"
@@ -20,6 +20,6 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-
+keywords = ["solidity", "AST", "parser", "solc"]
 [project.urls]
 "Homepage" = "https://github.com/AfroSec-Audits/py-solidity-ast"
