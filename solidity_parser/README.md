@@ -47,9 +47,9 @@ output_json = solcx.compile_standard(input_json)
 Next, import `py-solidity-ast` and initialize using `from_standard_output_json` or `from_standard_output`. This returns a list of `SourceUnit` objects, which each represent the base AST node in a Solidity source file.
 
 ```python
-from solidity_parser import from_standard_output
+import py-solidity-ast
 
-nodes = from_standard_output(output_json)
+nodes = py-solidity-ast.from_standard_output(output_json)
 
 nodes
 #output: [<SourceUnit iterable 'contracts/Token.sol'>, <SourceUnit iterable 'contracts/SafeMath.sol'>]
@@ -58,9 +58,9 @@ nodes
 You can also generate a single `SourceUnit` directly from that source's AST:
 
 ```python
-from solidity_parser import from_ast
+import py-solidity-ast
 
-node = from_ast(output_json["sources"]["contracts/Token.sol"]["ast"])
+node = py-solidity-ast.from_ast(output_json["sources"]["contracts/Token.sol"]["ast"])
 
 node
 # output: <SourceUnit iterable 'contracts/Token.sol'>

@@ -16,8 +16,8 @@
 import json
 from pathlib import Path
 
-from dependencies import set_dependencies
-from nodes import node_class_factory
+from solidity_parser.dependencies import set_dependencies
+from solidity_parser.nodes import node_class_factory
 
 
 def from_standard_output_json(path):
